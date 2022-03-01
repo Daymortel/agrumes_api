@@ -1,22 +1,19 @@
 require('dotenv').config();
 const express = require('express');
 const app = express();
-const db = require('./models/db');
-const species = require('./models/species');
-const variety = require('./models/variety');
+const species = require('./routers/species');
+const variety = require('./routers/variety');
+const speciess = require('./models/species');
+app.use(express.json());
+app.use('/species', species);
+app.use('/variety', variety);
 
+// speciess.findOne(17).then(console.table);
+// speciess.update(17, { scientific_name: 'Playstation 5', vernacular_name: 'PS5' }).then(() => {
+//   speciess.findOne(17).then(console.table);
+// });
 // species.findAll().then(console.table);
-variety.findAll().then(console.table);
-
-app.get('/species', async (req, res) => {
-  const speciess = await species.findAll();
-  res.json(speciess);
-});
-
-app.get('/variety', async (req, res) => {
-  const varietys = await variety.findAll();
-  res.json(varietys);
-});
+// variety.findAll().then(console.table);
 
 const port = 3467;
 app.listen(port, () => console.log(`Server connected to port ${port}.`));
