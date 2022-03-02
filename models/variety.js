@@ -1,5 +1,7 @@
 const db = require('./db');
 
+const columns = ['id', 'cultivar', 'juiciness', 'bitterness', 'species_id'];
+
 const findAll = async () => {
   return await db('variety').select('variety.id', 'cultivar', 'juiciness', 'bitterness', 'scientific_name', 'vernacular_name', 'family').join('species', function() {
     this.on('species.id', '=', 'variety.species_id');
@@ -11,7 +13,7 @@ const findOne = async (id) => {
 }
 
 const insert = async (object) => {
-  await db('variety').insert(object);
+  return await db('variety').returning(['id', 'cultivar', 'juiciness', 'bitterness', 'species_id']).insert(object);
 }
 
 const destroy = async (id) => {
@@ -22,10 +24,37 @@ const update = async (id, object) => {
   await db('variety').update(object).where({ id });
 }
 
+const findByMinJuiciness = async (minJu) => {
+  return await db('variety').select(columns).where('juiciness', '>=', minJu);
+}
+
+const findByMaxJuiciness = async (maxJu) => {
+  return await db('variety').select(columns).where('juiciness', '<=', maxJu);
+}
+
+const findByMinBitterness = async (minBi) => {
+  return await db('variety').select(columns).where('bitterness', '>=', minBi);
+}
+
+const findByMaxBitterness = async (maxBi) => {
+  return await db('variety').select(columns).where('bitterness', '<=', maxBi);
+}
+
+const findBySpecies = async (speciesName) => {
+  return await db('variety').select('variety.id', 'cultivar', 'juiciness', 'bitterness', 'scientific_name', 'vernacular_name', 'family').join('species', function() {
+    this.on('species.id', '=', 'variety.species_id');
+  }).where('vernacular_name', 'like', speciesName + '%');
+}
+
 module.exports = {
   findAll,
   findOne,
   insert,
   destroy,
-  update
+  update,
+  findByMinJuiciness,
+  findByMaxJuiciness,
+  findByMinBitterness,
+  findByMaxBitterness,
+  findBySpecies
 };

@@ -3,7 +3,7 @@ const express = require('express');
 const app = express();
 const species = require('./routers/species');
 const variety = require('./routers/variety');
-const speciess = require('./models/species');
+// const speciess = require('./models/species');
 app.use(express.json());
 app.use('/species', species);
 app.use('/variety', variety);
