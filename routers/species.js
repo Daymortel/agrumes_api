@@ -4,38 +4,38 @@ const router = new Router();
 
 router.get('/', async (req, res) => {
   const speciess = await species.findAll();
-  res.json(speciess);
+  res.status(200).json(speciess);
 });
 
 router.get('/:id', async (req, res) => {
   const id = req.params.id;
   const speciess = await species.findOne(id);
-  res.json(speciess);
+  res.status(200).json(speciess);
 });
 
 router.post('/', async (req, res) => {
   const body = req.body;
   const speciess = await species.insert(body);
-  res.json(speciess);
+  res.status(201).json(speciess);
 });
 
 router.delete('/:id', async (req, res) => {
   const id = req.params.id;
   await species.destroy(id);
-  res.json('Data deleted with succes !');
+  res.status(204).json('Data deleted with succes !');
 });
 
 router.put('/:id', async (req, res) => {
   const id = req.params.id;
   const body = req.body;
-  await species.update(id, body);
-  res.json('Data updated with succes !');
+  const speciess = await species.update(id, body);
+  res.status(200).json(speciess);
 });
 
-router.get('/family/:fa', async (req, res) => {
+router.get('/filter/family/:fa', async (req, res) => {
   const fa = req.params.fa;
   const family = await species.findByFamily(fa);
-  res.json(family);
+  res.status(200).json(family);
 });
 
 module.exports = router;

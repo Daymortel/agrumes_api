@@ -24,26 +24,36 @@ const update = async (id, object) => {
   await db('variety').update(object).where({ id });
 }
 
-const findByMinJuiciness = async (minJu) => {
-  return await db('variety').select(columns).where('juiciness', '>=', minJu);
-}
-
-const findByMaxJuiciness = async (maxJu) => {
-  return await db('variety').select(columns).where('juiciness', '<=', maxJu);
-}
-
-const findByMinBitterness = async (minBi) => {
-  return await db('variety').select(columns).where('bitterness', '>=', minBi);
-}
-
-const findByMaxBitterness = async (maxBi) => {
-  return await db('variety').select(columns).where('bitterness', '<=', maxBi);
-}
-
 const findBySpecies = async (speciesName) => {
   return await db('variety').select('variety.id', 'cultivar', 'juiciness', 'bitterness', 'scientific_name', 'vernacular_name', 'family').join('species', function() {
     this.on('species.id', '=', 'variety.species_id');
   }).where('vernacular_name', 'like', speciesName + '%');
+}
+
+const findBetween = async (criteria) => {
+  let request = db('variety_with_full_name').select();
+
+  const { juiciness, bitterness } = criteria;
+
+  if (juiciness) {
+    const { min, max } = juiciness
+    if (min) {
+      request = request.where('juiciness', '>=', min);
+    }
+    if (max) {
+      request = request.where('juiciness', '<=', max);
+    }
+  }
+  if (bitterness) {
+    const { min, max } = bitterness
+    if (min) {
+      request = request.where('bitterness', '>=', min);
+    }
+    if (max) {
+      request = request.where('bitterness', '<=', max);
+    }
+  }
+  return await request;
 }
 
 module.exports = {
@@ -52,9 +62,6 @@ module.exports = {
   insert,
   destroy,
   update,
-  findByMinJuiciness,
-  findByMaxJuiciness,
-  findByMinBitterness,
-  findByMaxBitterness,
-  findBySpecies
+  findBySpecies,
+  findBetween
 };

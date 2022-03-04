@@ -6,14 +6,11 @@ const variety = require('./routers/variety');
 // const speciess = require('./models/species');
 app.use(express.json());
 app.use('/species', species);
-app.use('/variety', variety);
-
-// speciess.findOne(17).then(console.table);
-// speciess.update(17, { scientific_name: 'Playstation 5', vernacular_name: 'PS5' }).then(() => {
-//   speciess.findOne(17).then(console.table);
-// });
-// species.findAll().then(console.table);
-// variety.findAll().then(console.table);
+app.use('/varieties', variety);
+app.use((req, res) => {
+  return res.status(400).send('Bad Request');
+  return res.status(404).send('Not Found');
+});
 
 const port = 3467;
 app.listen(port, () => console.log(`Server connected to port ${port}.`));

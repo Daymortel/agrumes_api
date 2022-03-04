@@ -17,7 +17,7 @@ const destroy = async (id) => {
 }
 
 const update = async (id, object) => {
-  await db('species').update(object).where({ id });
+  return await db('species').returning(['id', 'scientific_name', 'vernacular_name', 'family']).update(object).where({ id });
 }
 
 const findByFamily = async (family) => {
